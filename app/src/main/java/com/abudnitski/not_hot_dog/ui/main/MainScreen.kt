@@ -1,5 +1,10 @@
 package com.abudnitski.not_hot_dog.ui.main
 
+import androidx.annotation.OptIn
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ExperimentalGetImage
+import androidx.camera.core.ImageProxy
+import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -23,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -34,23 +40,37 @@ import com.abudnitski.not_hot_dog.R
 import com.abudnitski.not_hot_dog.presentation.MainScreenViewModel
 import com.example.compose.AppTheme
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.label.ImageLabeling
+import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
+import java.util.concurrent.Executors
 
+@OptIn(ExperimentalGetImage::class)
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
-    text: String = "Text", color: Int = 0
+    color: Int = 0
 ) {
     val viewModel = hiltViewModel<MainScreenViewModel>()
     val screenUiState = viewModel.uiState.collectAsState().value
 
+
     val context = LocalContext.current
     val previewView: PreviewView = remember { PreviewView(context) }
+    val cameraController = remember { LifecycleCameraController(context) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    cameraController.bindToLifecycle(lifecycleOwner)
+    cameraController.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+    previewView.controller = cameraController
+    val shutter = remember { Executors.newSingleThreadExecutor() }
+
+
+
 
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White)
     ) {
         AndroidView(
             factory = { previewView }, modifier = Modifier
@@ -72,7 +92,7 @@ fun MainScreen(
             Row {
                 Spacer(modifier = modifier.weight(1f))
                 Text(
-                    text = text,
+                    text = screenUiState.list.first().text,
                     modifier
                         .wrapContentSize()
                         .padding(vertical = 8.dp),
@@ -85,7 +105,13 @@ fun MainScreen(
             }
         }
         IconButton(
-            onClick = onClick,
+            onClick = {
+                    cameraController.setImageAnalysisAnalyzer(shutter) { imageProxy ->
+                        viewModel.analyzeImage(imageProxy){
+                            cameraController.clearImageAnalysisAnalyzer()
+                        }
+                    }
+            },
             Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 36.dp)
@@ -100,6 +126,8 @@ fun MainScreen(
         }
     }
 }
+
+
 
 @Preview
 @Composable
