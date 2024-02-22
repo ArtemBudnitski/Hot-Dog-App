@@ -98,7 +98,7 @@ fun MainScreen(
                         textAlign = TextAlign.Center,
                         fontSize = 30.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSecondary //poszukac koloru
+                        color = MaterialTheme.colorScheme.onSecondary
                     )
                     Spacer(modifier = modifier.weight(1f))
                 }
@@ -114,7 +114,7 @@ fun MainScreen(
                             textAlign = TextAlign.Start,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondary //poszukac koloru
+                            color = MaterialTheme.colorScheme.onSecondary
                         )
                     }
                 }
