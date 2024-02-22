@@ -1,11 +1,13 @@
 package com.abudnitski.not_hot_dog.presentation
 
 data class MainScreenUiState(
-    val list: List<Label>,
-    val color : Boolean = true
+    val labels: List<UiLabel>,
+    val itIsHotDog : Boolean = true,
+    var checked : Boolean = true,
+    var labelText : Boolean = false
 )
 
-data class Label(
+data class UiLabel(
     val text: String,
-    val confidence: Double
+    val textAndConfidence: String,
 )

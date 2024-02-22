@@ -16,13 +16,14 @@ import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
 
 @HiltViewModel
 @OptIn(ExperimentalGetImage::class)
-class MainScreenViewModel @Inject constructor(private val labelMapper: LabelMapper) : ViewModel() {
-    private val _uiState = MutableStateFlow(MainScreenUiState(listOf(Label(text = "Scan something!", confidence = 0.1))))
+class MainScreenViewModel @Inject constructor(private val labelMapper: LabelMapper, private val labelUiMapper: LabelUiMapper) :
+    ViewModel() {
+    private val _uiState =
+        MutableStateFlow(MainScreenUiState(listOf(UiLabel(text = "Scan something!", textAndConfidence = "Scan something!"))))
     val uiState: StateFlow<MainScreenUiState> = _uiState
 
-    fun analyzeImage(imageProxy: ImageProxy, checked: Boolean, stop: () -> Unit) {
+    fun analyzeImage(imageProxy: ImageProxy, stop: () -> Unit) {
         val imageLabeling = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS)
-        val hotDog = "Hot dog"
 
         imageProxy.image?.let { image ->
             val img = InputImage.fromMediaImage(
@@ -33,26 +34,26 @@ class MainScreenViewModel @Inject constructor(private val labelMapper: LabelMapp
             val process = imageLabeling.process(img)
             process.addOnSuccessListener { labels ->
                 val data = labelMapper.mapImageLabels(labels)
-                if (checked) {
+                if (_uiState.value.checked) {
                     if (data.any {
-                            it.text == hotDog
+                            it.text == HOT_DOG
                         }) {
                         _uiState.value = _uiState.value.copy(
-                            list = listOf(
-                                Label("It's Hot dog!", 0.9999999),
-                                Label("It's not a Hot dog!", 0.0001111)
-                            ), color = true
+                            labels = listOf(
+                                UiLabel("It's Hot dog!", "It's Hot dog! = 99%"),
+                                UiLabel("It's not a Hot dog!", "It's not a Hot dog! = 1%")
+                            ), itIsHotDog = true
                         )
                     } else {
                         _uiState.value = _uiState.value.copy(
-                            list = listOf(
-                                Label("It's not a Hot dog!", 0.999999),
-                                Label("It's Hot dog!", 0.0001111)
-                            ), color = false
+                            labels = listOf(
+                                UiLabel("It's not a Hot dog!", "It's not a Hot dog! = 99%"),
+                                UiLabel("It's Hot dog!", "It's Hot dog! = 1%")
+                            ), itIsHotDog = false
                         )
                     }
                 } else {
-                    _uiState.value = _uiState.value.copy(list = data, color = true)
+                    _uiState.value = _uiState.value.copy(labels = labelUiMapper.map(data), itIsHotDog = true)
                 }
                 stop()
             }
@@ -61,5 +62,18 @@ class MainScreenViewModel @Inject constructor(private val labelMapper: LabelMapp
                 imageProxy.close()
             }
         }
+    }
+
+
+    fun changeChecked(checked: Boolean) {
+        _uiState.value = uiState.value.copy(checked = checked)
+    }
+
+    fun changeLabelText() {
+        _uiState.value = _uiState.value.copy(labelText = !_uiState.value.labelText)
+    }
+
+    private companion object {
+        const val HOT_DOG = "Hot dog"
     }
 }
