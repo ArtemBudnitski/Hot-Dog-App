@@ -25,10 +25,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,8 +57,6 @@ fun MainScreen(
     val previewView: PreviewView = remember { PreviewView(context) }
     val cameraController = remember { LifecycleCameraController(context) }
     val lifecycleOwner = LocalLifecycleOwner.current
-    var checked by remember { mutableStateOf(true) }
-    var labelText by remember { mutableStateOf(false) }
 
     cameraController.bindToLifecycle(lifecycleOwner)
     cameraController.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -83,8 +78,8 @@ fun MainScreen(
                 .fillMaxWidth()
                 .padding(top = 16.dp, start = 12.dp, end = 12.dp)
                 .align(Alignment.TopCenter)
-                .clickable { labelText = !labelText },
-            colors = if (screenUiState.color) {
+                .clickable { viewModel.changeLabelText() },
+            colors = if (screenUiState.itIsHotDog) {
                 CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
             } else {
                 CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
@@ -92,26 +87,26 @@ fun MainScreen(
             shape = MaterialTheme.shapes.extraLarge,
 
             ) {
-            if (!labelText) {
+            if (!screenUiState.labelText) {
                 Row {
                     Spacer(modifier = modifier.weight(1f))
                     Text(
-                        text = screenUiState.list.first().text,
+                        text = screenUiState.labels.first().text,
                         modifier
                             .wrapContentSize()
                             .padding(vertical = 12.dp),
                         textAlign = TextAlign.Center,
                         fontSize = 30.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onSecondary //poszukac koloru
                     )
                     Spacer(modifier = modifier.weight(1f))
                 }
             } else {
-                for (i in 0 until minOf(screenUiState.list.size, 4)) {
+                screenUiState.labels.forEach {
                     Row {
                         Text(
-                            text = "${screenUiState.list[i].text} = ${"%.3f".format(screenUiState.list[i].confidence * 100)}%",
+                            text = it.textAndConfidence,
                             modifier
                                 .wrapContentSize()
                                 .padding(vertical = 12.dp)
@@ -119,7 +114,7 @@ fun MainScreen(
                             textAlign = TextAlign.Start,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            color = MaterialTheme.colorScheme.onSecondary //poszukac koloru
                         )
                     }
                 }
@@ -127,11 +122,11 @@ fun MainScreen(
         }
 
         Switch(
-            checked = checked,
+            checked = screenUiState.checked,
             onCheckedChange = {
-                checked = it
+                viewModel.changeChecked(it)
             },
-            thumbContent = if (checked) {
+            thumbContent = if (screenUiState.checked) {
                 {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.hot_dog),
@@ -165,7 +160,7 @@ fun MainScreen(
         IconButton(
             onClick = {
                 cameraController.setImageAnalysisAnalyzer(shutter) { imageProxy ->
-                    viewModel.analyzeImage(imageProxy, checked) {
+                    viewModel.analyzeImage(imageProxy) {
                         cameraController.clearImageAnalysisAnalyzer()
                     }
                 }
@@ -178,7 +173,7 @@ fun MainScreen(
             Icon(
                 painter = painterResource(id = R.drawable.shutter), contentDescription = stringResource(R.string.shutter),
                 modifier
-                    .background(Color.White)
+                    .background(MaterialTheme.colorScheme.onSecondary)
                     .padding(4.dp)
             )
         }
