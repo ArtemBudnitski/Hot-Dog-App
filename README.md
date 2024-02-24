@@ -3,6 +3,9 @@
 ## Opis
 "Not a Hot Dog" to aplikacja mobilna inspirowana popularnym serialem "Silicon Valley". Aplikacja wykorzystuje technologię rozpoznawania obrazów do określania, czy obiekt przedstawiony na zdjęciu jest hot dogiem czy nie.
 
+## Fragment z serialu "Silicon Valley" z aplikacją:
+https://www.youtube.com/watch?v=vIci3C4JkL0
+
 ## Zastosowane technologie
 - **Języki programowania:** Kotlin
 - **Biblioteki:** 
