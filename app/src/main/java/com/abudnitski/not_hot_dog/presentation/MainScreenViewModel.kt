@@ -40,15 +40,15 @@ class MainScreenViewModel @Inject constructor(private val labelMapper: LabelMapp
                         }) {
                         _uiState.value = _uiState.value.copy(
                             labels = listOf(
-                                UiLabel("Hot dog!", "Hot dog! = 99%"),
-                                UiLabel("Not hot dog!", "Not hot dog! = 1%")
+                                UiLabel("✅ Hot dog!", "✅ Hot dog! = 99%"),
+                                UiLabel("❌ Not hot dog!", "❌ Not hot dog! = 1%")
                             ), itIsHotDog = true
                         )
                     } else {
                         _uiState.value = _uiState.value.copy(
                             labels = listOf(
-                                UiLabel("Not hot dog!", "Not hot dog! = 99%"),
-                                UiLabel("Hot dog!", "Hot dog! = 1%")
+                                UiLabel("❌Not hot dog!", "❌Not hot dog! = 99%"),
+                                UiLabel("✅ Hot dog!", "✅ Hot dog! = 1%")
                             ), itIsHotDog = false
                         )
                     }
