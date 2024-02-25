@@ -1,4 +1,4 @@
-# Hot Dog App
+# Not Hot Dog App
 
 ## Opis
 "Not a Hot Dog" to aplikacja mobilna inspirowana popularnym serialem "Silicon Valley". Aplikacja wykorzystuje technologię rozpoznawania obrazów do określania, czy obiekt przedstawiony na zdjęciu jest hot dogiem czy nie.
