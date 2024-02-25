@@ -26,6 +26,7 @@ class MainScreenViewModel @Inject constructor(private val labelMapper: LabelMapp
         val imageLabeling = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS)
 
         imageProxy.image?.let { image ->
+            _uiState.value = _uiState.value.copy(isDataLoading = true)
             val img = InputImage.fromMediaImage(
                 image,
                 imageProxy.imageInfo.rotationDegrees
@@ -42,31 +43,38 @@ class MainScreenViewModel @Inject constructor(private val labelMapper: LabelMapp
                             labels = listOf(
                                 UiLabel("✅ Hot dog!", "✅ Hot dog! = 99%"),
                                 UiLabel("❌ Not hot dog!", "❌ Not hot dog! = 1%")
-                            ), itIsHotDog = true
+                            ), itIsHotDog = true, isDataLoading = false
                         )
                     } else {
                         _uiState.value = _uiState.value.copy(
                             labels = listOf(
                                 UiLabel("❌Not hot dog!", "❌Not hot dog! = 99%"),
                                 UiLabel("✅ Hot dog!", "✅ Hot dog! = 1%")
-                            ), itIsHotDog = false
+                            ), itIsHotDog = false, isDataLoading = false
                         )
                     }
                 } else {
-                    _uiState.value = _uiState.value.copy(labels = labelUiMapper.map(data), itIsHotDog = true)
+                    _uiState.value =
+                        _uiState.value.copy(labels = labelUiMapper.map(data), itIsHotDog = true, isDataLoading = false)
                 }
                 stop()
             }
 
             process.addOnCompleteListener {
                 imageProxy.close()
+                _uiState.value = _uiState.value.copy(isDataLoading = false)
             }
         }
     }
 
 
     fun changeChecked(checked: Boolean) {
-        _uiState.value = uiState.value.copy(checked = checked)
+        _uiState.value = uiState.value.copy(
+            checked = checked,
+            labels = listOf(UiLabel(text = "Scan something!", textAndConfidence = "Scan something!")),
+            itIsHotDog = true
+        )
+
     }
 
     fun changeLabelText() {

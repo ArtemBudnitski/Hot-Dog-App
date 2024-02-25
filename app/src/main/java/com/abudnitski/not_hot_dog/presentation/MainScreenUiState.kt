@@ -4,7 +4,8 @@ data class MainScreenUiState(
     val labels: List<UiLabel>,
     val itIsHotDog : Boolean = true,
     var checked : Boolean = true,
-    var labelText : Boolean = false
+    var labelText : Boolean = false,
+    var isDataLoading : Boolean = false
 )
 
 data class UiLabel(
