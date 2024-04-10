@@ -1,5 +1,12 @@
 # Not Hot Dog App
 
+| Object Mode | Hotdog mode True | Hotdog mode false |
+| ---- | ----| ---- |
+|![Screenshot_2024-04-10-13-45-20-43_2b624583f8ef78b54f21d26192f53cf0](https://github.com/ArtemBudnitski/Hot-Dog-App/assets/126951785/833b4c9c-c04a-4b44-931d-2f3526619462)|![Screenshot_2024-04-10-14-04-27-04_2b624583f8ef78b54f21d26192f53cf0](https://github.com/ArtemBudnitski/Hot-Dog-App/assets/126951785/262aa347-b425-437e-bb42-a2e4edc97f49)|![Screenshot_2024-04-10-14-04-50-87_2b624583f8ef78b54f21d26192f53cf0](https://github.com/ArtemBudnitski/Hot-Dog-App/assets/126951785/8d69050b-0211-4299-a067-f12e5ca96eca)|
+
+
+
+
 ## Opis
 "Not a Hot Dog" to aplikacja mobilna inspirowana popularnym serialem "Silicon Valley". Aplikacja wykorzystuje technologię rozpoznawania obrazów do określania, czy obiekt przedstawiony na zdjęciu jest hot dogiem czy nie.
 
